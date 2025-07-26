@@ -8,7 +8,14 @@ const client = new GraphQLClient(
     },
   }
 );
-console.log("SPACE:", process.env.NEXT_PUBLIC_CONTENTFUL_SPACE_ID);
+
+type LandingPageResponse = {
+  landingPageCollection: {
+    items: any[]; // Replace `any` with your actual type
+  };
+};
+
+
 export async function fetchLandingPage(slug: string) {
   const query = `
     query GetLandingPage($slug: String!) {
@@ -20,7 +27,8 @@ export async function fetchLandingPage(slug: string) {
       }
     }
   `;
-  const { landingPageCollection } = await client.request(query, { slug });
+  const res = await client.request(query, { slug }) as LandingPageResponse;
+  const landingPageCollection = res.landingPageCollection;
   return landingPageCollection.items[0];
 }
 
@@ -81,8 +89,8 @@ export async function fetchBlockEntryData(type: string, entryId: string) {
 
   try {
     const variables = { id: entryId };
-    const res = await client.request(query, variables);
-    return res[key];
+    const res = await client.request(query, variables) as Record<string, any>;
+    return res[key] ?? null;
   } catch (err) {
     console.error('Request Failed:', JSON.stringify(err, null, 2));
     throw err;

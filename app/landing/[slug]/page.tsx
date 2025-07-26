@@ -2,8 +2,7 @@
 import { fetchLandingPage } from '@/lib/contentful';
 import BlockRenderer from '@/components/BlockRenderer';
 
-
-export default async function LandingPage({ params }: { params: { slug: string } }) {
+export default async function LandingPage({ params }: { params: any }) {
   const page = await fetchLandingPage(params.slug);
   if (!page) return <div>Not found</div>;
 
